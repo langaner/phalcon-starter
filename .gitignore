@@ -1,0 +1,6 @@
+composer.phar
+composer.lock
+vendor/
+app/cache/
+access.log
+error.log
