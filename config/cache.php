@@ -2,11 +2,16 @@
 return [
     'default' => 'file',
     'stores' => [
-        'apc' => [],
+        'apc' => [
+            'lifetime' => 172800,
+            'prefix' => 'default'
+        ],
         'file' => [
-            'path' => '',
+            'lifetime' => 172800,
+            'cacheDir' => BASE . '/storage/cache/',
         ],
         'memcached' => [
+            'lifetime' => 172800,
             'persistent' => '',
             'sasl' => [],
             'options' => [],
@@ -19,8 +24,13 @@ return [
             ],
         ],
         'redis' => [
-            'connection' => 'default',
+            'lifetime' => 172800,
+            'host' => 'localhost',
+            'port' => 6379,
+            'auth' => 'default',
+            'persistent' => false,
+            'index' => 0,
         ]
     ],
-    'prefix' => 'phalcon',
+    'prefix' => 'phalcon'
 ];

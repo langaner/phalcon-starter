@@ -1,16 +1,21 @@
 <?php
 
-use Phalcon\DI\FactoryDefault,
-	Phalcon\DI,
-    Phalcon\Mvc\Router,
-	Phalcon\Mvc\View\Simple as View,
-	Phalcon\Mvc\Dispatcher,
-	Phalcon\Mvc\Url as UrlResolver,
-	Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter,
-	Phalcon\Mvc\View\Engine\Volt as VoltEngine,
-	Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter,
-	Phalcon\Session\Adapter\Files as SessionAdapter,
-	Symfony\Component\Debug\Debug;
+use Phalcon\DI\FactoryDefault;
+use Phalcon\DI;
+use Phalcon\Mvc\Router;
+use Phalcon\Mvc\View\Simple as View;
+use Phalcon\Mvc\Dispatcher;
+use Phalcon\Mvc\Url as UrlResolver;
+use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
+use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
+use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
+use Phalcon\Session\Adapter\Files as SessionAdapter;
+use Symfony\Component\Debug\Debug;
+use Phalcon\Cache\Backend\Memcache;
+use Phalcon\Cache\Backend\File;
+use Phalcon\Cache\Backend\Redis;
+use Phalcon\Cache\Backend\Apc;
+use Phalcon\Cache\Frontend\Data as FrontData;
 
 /**
  * Create a new Factory default dependancy injector
@@ -29,7 +34,7 @@ $container->set('session', function()
 });
 
 /**
- * Dispatcher
+ * Dispatcher service
  */
 $container->set('dispatcher', function() 
 {
@@ -48,7 +53,7 @@ $container->set('modelsMetadata', function() use ($config)
 });
 
 /**
- * The database component
+ * The database service
  */
 $container->set('db', function() use ($config) 
 {
@@ -56,7 +61,72 @@ $container->set('db', function() use ($config)
 });
 
 /**
- * The Views component
+ * Cache service
+ */
+$container->set('cache', function() use ($config) {
+	$cache = '';
+	
+	switch ($config->cache->default) {
+		case 'file':
+			$frontCache = new FrontData([
+				"lifetime" => $config->cache->file->lifetime,
+			]);
+
+			$backendOptions = [
+				"cacheDir" => $config->cache->file->cacheDir,
+			];
+
+			$cache = new File($frontCache, $backendOptions);
+			break;
+		case 'memcached':
+			$frontCache = new FrontData([
+				"lifetime" => $config->cache->memcached->lifetime,
+			]);
+
+			$cache = new Memcache(
+				$frontCache,
+				[
+					"host" => $config->cache->memcached->host,
+					"port" => $config->cache->memcached->port,
+					"persistent" => $config->cache->memcached->persistent,
+				]
+			);
+			break;
+		case 'redis':
+			$frontCache = new FrontData([
+				"lifetime" => $config->cache->redis->lifetime,
+			]);
+
+			$cache = new Redis(
+				$frontCache,
+				[
+					"host" => $config->cache->redis->host,
+					"port" => $config->cache->redis->port,
+					"auth" => $config->cache->redis->auth,
+					"persistent" => $config->cache->redis->persistent,
+					"index" => $config->cache->redis->index,
+				]
+			);
+			break;
+		case 'apc':
+			$frontCache = new FrontData([
+				"lifetime" => $config->cache->apc->lifetime,
+			]);
+
+			$cache = new Apc(
+				$frontCache,
+				[
+					"prefix" => $config->cache->apc->prefix,
+				]
+			);
+			break;
+	}
+
+	return $cache;
+});
+
+/**
+ * The Views service
  */
 $container->set('view', function() use ($config) 
 {
