@@ -1,5 +1,10 @@
 ## Phalcon starter
 
+[![Latest Stable Version](https://poser.pugx.org/langaner/phalcon-starter/v/stable)](https://packagist.org/packages/langaner/phalcon-starter)
+[![Total Downloads](https://poser.pugx.org/langaner/phalcon-starter/downloads)](https://packagist.org/packages/langaner/phalcon-starter)
+[![Latest Unstable Version](https://poser.pugx.org/langaner/phalcon-starter/v/unstable)](https://packagist.org/packages/langaner/phalcon-starter)
+[![License](https://poser.pugx.org/langaner/phalcon-starter/license)](https://packagist.org/packages/langaner/phalcon-starter)
+
 A Skeleton project.
 
 ## How to install
