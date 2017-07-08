@@ -26,3 +26,15 @@ Repositories - all repositoreis. You can use it by call $this->userRepository->t
 Services - all app services. You can use it by call $this->userService->test()
 
 routes - all routes
+
+## Bindings
+
+To use repositories, services, presenters you must register binding in ModulesProvider or in you module.
+
+Examples:
+
+Repository - $this->bindRepository('userRepository', UserRepository::class, [new UserModel]);
+
+Service - $this->bindService('userService', UserService::class, [$this->getDi()->get('userRepository')]);
+
+Presenter - $this->bindRepository('userPresenter', UserPresenter::class, [new UserModel]);
